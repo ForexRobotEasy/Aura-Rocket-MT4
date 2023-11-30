@@ -1,0 +1,77 @@
+mql5
+//+------------------------------------------------------------------+
+//|                                       Aura Rocket MT4            |
+//|                      Developer's Site: forexroboteasy.com         |
+//|                    Development: Forex Robot Easy Team             |
+//+------------------------------------------------------------------+
+
+// Include necessary libraries
+#include <Expert\MQL5\Include\ANN\MLP.mqh>
+#include <Expert\MQL5\Include\Indicators\Trend.mqh>
+
+// Define constants
+#define LOT_SIZE 0.01                  // Standard lot size
+#define STOP_LOSS 100                  // Stop loss in points
+#define TAKE_PROFIT 200                // Take profit in points
+
+// Define global variables
+double lotSize;                       // Current lot size
+double stopLoss;                      // Current stop loss
+double takeProfit;                    // Current take profit
+
+// Initialize the trading robot
+void OnInit()
+{
+    // Set initial lot size, stop loss, take profit
+    lotSize = LOT_SIZE;
+    stopLoss = STOP_LOSS * _Point;
+    takeProfit = TAKE_PROFIT * _Point;
+}
+
+// Execute trading operations
+void OnTick()
+{
+    // Calculate entry points using multilayer perceptron
+    double entryPoint = CalculateEntryPoint();
+
+    // Check if the entry point is valid
+    if (entryPoint != 0)
+    {
+        // Open a trade in the direction of the trend
+        if (entryPoint > 0)
+            Buy(lotSize, entryPoint, stopLoss, takeProfit);
+        else if (entryPoint < 0)
+            Sell(lotSize, -entryPoint, stopLoss, takeProfit);
+    }
+}
+
+// Calculate entry points using multilayer perceptron
+double CalculateEntryPoint()
+{
+    // Initialize multilayer perceptron
+    CMLP mlp;
+    mlp.Create(4, 1, 2, 10, 0.01);
+
+    // Train multilayer perceptron
+    mlp.Train();
+
+    // Get prediction from multilayer perceptron
+    double prediction = mlp.Predict();
+
+    // Return the predicted entry point
+    return prediction;
+}
+
+// Open a buy trade
+void Buy(double volume, double price, double stopLoss, double takeProfit)
+{
+    // Place a buy trade with specified parameters
+    // ...
+}
+
+// Open a sell trade
+void Sell(double volume, double price, double stopLoss, double takeProfit)
+{
+    // Place a sell trade with specified parameters
+    // ...
+}
